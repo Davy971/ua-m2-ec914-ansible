@@ -1,0 +1,50 @@
+---
+# tasks file for depot
+- name: ajout cle update
+  apt_key: 
+    url: https://www.dotdeb.org/dotdeb.gpg
+
+- name: dotdep
+  apt_repository: 
+    repo: "deb http://packages.dotdeb.org {{ansible_lsb['codename']}} all"
+    update_cache: no
+  when: ansible_lsb['id']|lower == 'debian'
+
+- name: backports
+  apt_repository: 
+    repo: "deb http://deb.debian.org/debian {{ansible_lsb['codename']}}-backports main contrib non-free"
+    update_cache: no
+  when: ansible_lsb['id']|lower == 'debian'
+
+
+
+- name: dotdep_ubuntu
+  apt_repository: 
+    repo: "deb http://packages.dotdeb.org stable all"
+    update_cache: no
+  when: ansible_lsb['id']|lower == 'ubuntu'
+
+- name: backports_ubuntu
+  apt_repository: 
+    repo: "deb http://archive.ubuntu.com/ubuntu {{ansible_lsb['codename']}}-backports main restricted universe multiverse"
+    update_cache: no
+  when: 
+    - ansible_lsb['id']|lower == 'ubuntu'
+    - ansible_machine|lower !='arm64'
+    - ansible_machine|lower !='armhf'
+
+
+
+- name: backports_ubuntu
+  apt_repository: 
+    repo: "deb http://ports.ubuntu.com/ubuntu-ports {{ansible_lsb['codename']}}-backports main restricted universe multiverse"
+    update_cache: no
+  when: 
+    - ansible_lsb['id']|lower == 'ubuntu'
+    - ansible_machine|lower =='arm64' or ansible_machine|lower =='armhf'
+
+
+- name: Maj
+  apt:
+    update_cache: yes
+
