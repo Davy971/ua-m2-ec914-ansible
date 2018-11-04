@@ -1,0 +1,50 @@
+---
+# tasks file for docker
+
+- name: update cache
+  apt: 
+    update_cache: yes
+
+- name: install packages apt-transport-https 
+  apt: 
+    name: apt-transport-https 
+
+- name: install packages ca-certificates
+  apt: 
+    name: ca-certificates
+
+- name: install packages curl 
+  apt: 
+    name: curl 
+
+- name: install packages gnupg2 
+  apt: 
+    name: gnupg2 
+
+- name: install packages software-properties-common
+  apt: 
+    name: software-properties-common
+ 
+- name: ajout clef Docker
+  apt_key: 
+    url: https://download.docker.com/linux/debian/gpg
+  when: ansible_lsb['id']|lower == 'debian'
+
+- name:    Add Docker APT repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ansible_distribution_release}} stable
+  when: ansible_lsb['id']|lower == 'debian'
+
+- name: ajout clef Docker
+  apt_key: 
+    url: https://download.docker.com/linux/ubuntu/gpg
+  when: ansible_lsb['id']|lower == 'ubuntu'
+
+- name:    Add Docker APT repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable
+  when: ansible_lsb['id']|lower == 'ubuntu'
+
+
+- name:    Install Docker
+  apt: name=docker-ce
